@@ -34,7 +34,7 @@
         
         methods: {
             dataContext(ctx, callback) {
-                axios.get("https://localhost:5001/books")
+                axios.get("https://localhost:5001/books/page/1")
                     .then(response => {
                         
                         callback(response.data);

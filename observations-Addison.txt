@@ -1,0 +1,22 @@
+
+Pagination:
+
+1) create new endpoint in BooksController.cs ("GetBooksByPage") and create method by the same name in interface BookService.cs. Accept page number as parameter (page 1 if none provided). Use /books/page/# as convention to keep legacy endpoint. Return endpoint as list of 10 books.
+2) Set homepage to load first page of books by default in Home.vue and include pagination HTML elements that re-load list from fetch of /pages/index
+
+security:
+- npm i: 539 vulnerabilities (370 high!) run audit
+- why is CORS set to allow all? requests should only originate from the production domain
+
+access: 
+- src unknown on many images
+- err 403 on 2 .jpg images from aws (type xml)
+- /books/ (all books)
+- /books/3 (page 3 of books)
+- /book/1 (book #1)
+
+performance:
+- making sure to use IQueryable methods to prevent loading entire dataset into memory (should also deprecate /books/ endpoint that loads entire database)
+
+other suggestion:
+- lint variable names to follow camelCase or other naming convention (bookID or book_id instead of bookid)
