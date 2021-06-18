@@ -13,7 +13,7 @@ namespace TechLibrary.Services
     {
         Task<List<Book>> GetBooksAsync();
         Task<Book> GetBookByIdAsync(int bookid);
-        Task<List<Book>> GetBooksByPageAsync(int pageNumber);
+        Task<List<Book>> GetBooksByPageAsync(int page, int recordsPerPage);
         int GetTotalBooksCount();
     }
 
@@ -38,15 +38,16 @@ namespace TechLibrary.Services
             return await _dataContext.Books.SingleOrDefaultAsync(x => x.BookId == bookid);
         }  
 
-        public async Task<List<Book>> GetBooksByPageAsync(int pageNumber)
+        public async Task<List<Book>> GetBooksByPageAsync(int page, int recordsPerPage)
         {
             // use queryable to prevent performance hit by not loading 
             // entire record set in momory
             var queryable = _dataContext.Books.AsQueryable();
-            // define how many records should be shown on each page
-            var recordsPerPage = 10;
+            // default to 10 records per page if param 0 (not passed in)
+            recordsPerPage = recordsPerPage == 0 ? 10 : recordsPerPage;
+
             // ending bounds
-            var end = pageNumber * recordsPerPage;
+            var end = page * recordsPerPage;
             // starting bounds
             var start = end - recordsPerPage;
 

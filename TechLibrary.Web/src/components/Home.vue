@@ -44,14 +44,10 @@
             // paging, filtering, and sorting of the data, 
             // before passing it to b - table for display.
             dataContext(ctx, callback) {
-
-
                 // get fields using ctx.currentPage, was previously getting all records
-                axios.get(`https://localhost:5001/books/page/${ctx.currentPage}`)
+                axios.get(`https://localhost:5001/books?page=${ctx.currentPage}`)
                     .then(response => {
-                        //response.data.headers.get('x-total-books-count')
                         var totalBooksCount = response.headers['x-total-books-count'];
-                            // .get('x-total-books-count');
                         this.totalItems = totalBooksCount;
                         callback(response.data);
                     });

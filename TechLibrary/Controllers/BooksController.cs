@@ -6,6 +6,7 @@ using AutoMapper;
 using TechLibrary.Domain;
 using TechLibrary.Models;
 using TechLibrary.Services;
+using System;
 
 namespace TechLibrary.Controllers
 {
@@ -25,32 +26,35 @@ namespace TechLibrary.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] int page, [FromQuery] int recordsPerPage)
         {
             _logger.LogInformation("Get all books");
+            _logger.LogInformation("queryString: " + Request.QueryString);
 
-            var books = await _bookService.GetBooksAsync();
-
-            var bookResponse = _mapper.Map<List<BookResponse>>(books);
-
-            return Ok(bookResponse);
-        }
-
-        // define new route built on existing /books/ endpoint
-        // pass in pageNumber parameter
-        [HttpGet("page/{pageNumber}")]
-        public async Task<IActionResult> GetBooksByPage(int pageNumber)
-        {
-            _logger.LogInformation($"Get page {pageNumber} from all books, count 10");
-            // call async method in BookService to retrieve 10 books with pagination param
-            var books = await _bookService.GetBooksByPageAsync(pageNumber);
-            // set total items in custom header value
-            var totalBooksCount = _bookService.GetTotalBooksCount();
-            _logger.LogInformation($"total books count is {totalBooksCount}");
             // expose total books count header value because CORS is currently enabled
             HttpContext.Response.Headers.Add("access-control-expose-headers", "x-total-books-count");
+            // set total items in custom header value
+            var totalBooksCount = _bookService.GetTotalBooksCount();
             // send total books count in custom header
             HttpContext.Response.Headers.Add("x-total-books-count", totalBooksCount.ToString());
+
+            // initialize return variable
+            List<Book> books;
+
+            // if page URL parameter is passed in and int parse successful
+            if (page != 0)
+            {
+                // call async method in BookService to retrieve books with pagination param
+                books = await _bookService.GetBooksByPageAsync(page, recordsPerPage);
+            }
+            else
+            {
+                // give full response, /books/ endpoint without params should be
+                // either be backwards compatable or deprecated
+                _logger.LogInformation($"total books count is {totalBooksCount}");
+                books = await _bookService.GetBooksAsync();
+            }
+
             var bookResponse = _mapper.Map<List<BookResponse>>(books);
 
             return Ok(bookResponse);
