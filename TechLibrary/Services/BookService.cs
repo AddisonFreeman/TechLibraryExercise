@@ -32,9 +32,10 @@ namespace TechLibrary.Services
             return await queryable.ToListAsync();
         }
 
-        public async Task<Book> GetBookByIdAsync(int bookid)
+        public async Task<Book> GetBookByIdAsync(int bookid) 
+        {
             return await _dataContext.Books.SingleOrDefaultAsync(x => x.BookId == bookid);
-        }
+        }  
 
         public async Task<List<Book>> GetBooksByPageAsync(int pageNumber)
         {
