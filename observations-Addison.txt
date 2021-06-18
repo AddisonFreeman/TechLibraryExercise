@@ -3,6 +3,7 @@ Pagination:
 
 1) create new endpoint in BooksController.cs ("GetBooksByPage") and create method by the same name in interface BookService.cs. Accept page number as parameter (page 1 if none provided). Use /books/page/# as convention to keep legacy endpoint. Return endpoint as list of 10 books.
 2) Set homepage to load first page of books by default in Home.vue and include pagination HTML elements that re-load list from fetch of /pages/index
+3) enable pagination in bootstrap-vue with API through the dataContext (itemsProvider) method (http://blog.junjizhi.com/all/technical/2021/03/21/boostrap-vue-table-plus-backend-api.html)
 
 security:
 - npm i: 539 vulnerabilities (370 high!) run audit
@@ -16,7 +17,22 @@ access:
 - /book/1 (book #1)
 
 performance:
-- making sure to use IQueryable methods to prevent loading entire dataset into memory (should also deprecate /books/ endpoint that loads entire database)
+- making sure to use IQueryable methods to prevent loading entire dataset into memory (should also deprecate /books/ endpoint that loads entire database) (https://dotnetcorecentral.com/blog/ienumerable-vs-iqueryable/)
 
-other suggestion:
+design/accessibility: 
+
 - lint variable names to follow camelCase or other naming convention (bookID or book_id instead of bookid)
+
+
+
+
+
+
+
+
+
+TODO
+
+- added sticky-header for readability
+- modified table header width for better content layout 
+other suggestion:

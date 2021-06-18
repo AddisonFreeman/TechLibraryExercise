@@ -2,7 +2,7 @@
     <div class="home">
         <h1>{{ msg }}</h1>
 
-        <b-table striped hover :items="dataContext" :fields="fields" responsive="sm">
+        <b-table striped hover :items="dataContext" :fields="fields" responsive="sm" :per-page="perPage" :current-page="currentPage">
             <template v-slot:cell(thumbnailUrl)="data">
                 <b-img :src="data.value" thumbnail fluid></b-img>
             </template>
@@ -10,6 +10,7 @@
                 <b-link :to="{ name: 'book_view', params: { 'id' : data.item.bookId } }">{{ data.item.title }}</b-link>
             </template>
         </b-table>
+        <b-pagination :total-rows="totalItems" v-model="currentPage" :per-page="perPage" responsive="sm"></b-pagination>
     </div>
 </template>
 
@@ -29,16 +30,40 @@
                 { key: 'descr', label: 'Description', sortable: true, sortDirection: 'desc' }
 
             ],
+            currentPage: 1,
+            // Setting per-page to 0 (default) will disable the local items pagination feature.
+            // https://bootstrap-vue.org/docs/components/table#pagination
+            perPage: 0,
+            // TODO update total items count inside itemsProvider
+            totalItems: 100,
             items: []
         }),
         
         methods: {
+            // By default, the items provider function is responsible for all 
+            // paging, filtering, and sorting of the data, 
+            // before passing it to b - table for display.
             dataContext(ctx, callback) {
-                axios.get("https://localhost:5001/books/page/1")
+
+
+                // get fields using ctx.currentPage, was previously getting all records
+                axios.get(`https://localhost:5001/books/page/${ctx.currentPage}`)
                     .then(response => {
-                        
+                        console.log(ctx)
                         callback(response.data);
                     });
+            }
+        },
+        watch: {
+            currentPage: {
+                handler: function (value) {
+                    console.log('currentPage update', value);
+                    this.currentPage = value;
+                    console.log(this.items);
+                    //this.fetchData().catch(error => {
+                    //    console.error(error)
+                    //})
+                }
             }
         }
     };
