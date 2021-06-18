@@ -44,7 +44,13 @@ namespace TechLibrary.Controllers
             _logger.LogInformation($"Get page {pageNumber} from all books, count 10");
             // call async method in BookService to retrieve 10 books with pagination param
             var books = await _bookService.GetBooksByPageAsync(pageNumber);
-
+            // set total items in custom header value
+            var totalBooksCount = _bookService.GetTotalBooksCount();
+            _logger.LogInformation($"total books count is {totalBooksCount}");
+            // expose total books count header value because CORS is currently enabled
+            HttpContext.Response.Headers.Add("access-control-expose-headers", "x-total-books-count");
+            // send total books count in custom header
+            HttpContext.Response.Headers.Add("x-total-books-count", totalBooksCount.ToString());
             var bookResponse = _mapper.Map<List<BookResponse>>(books);
 
             return Ok(bookResponse);

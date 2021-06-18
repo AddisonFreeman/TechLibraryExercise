@@ -14,6 +14,7 @@ namespace TechLibrary.Services
         Task<List<Book>> GetBooksAsync();
         Task<Book> GetBookByIdAsync(int bookid);
         Task<List<Book>> GetBooksByPageAsync(int pageNumber);
+        int GetTotalBooksCount();
     }
 
     public class BookService : IBookService
@@ -57,6 +58,14 @@ namespace TechLibrary.Services
                 .Take(recordsPerPage);
 
             return await takeTenRecords.ToListAsync();
+        }
+
+        public int GetTotalBooksCount()
+        {
+            var queryable = _dataContext.Books.AsQueryable();
+            var bookCount = queryable.Count();
+
+            return bookCount;
         }
     }
 }
