@@ -6,15 +6,16 @@ using Microsoft.EntityFrameworkCore;
 using TechLibrary.Data;
 using TechLibrary.Domain;
 using TechLibrary.Models;
+using TechLibrary.Helpers;
 
 namespace TechLibrary.Services
 {
     public interface IBookService
     {
-        Task<List<Book>> GetBooksAsync();
+        //Task<List<Book>> GetBooksAsync();
         Task<Book> GetBookByIdAsync(int bookid);
-        Task<List<Book>> GetBooksByPageAsync(int page, int recordsPerPage);
-        int GetTotalBooksCount();
+        Task<List<Book>> GetBooksAsync(int page, int recordsPerPage, string filterString, string filterType);
+        int GetBooksCount(string filterType, string filterString);
     }
 
     public class BookService : IBookService
@@ -26,19 +27,19 @@ namespace TechLibrary.Services
             _dataContext = dataContext;
         }
 
-        public async Task<List<Book>> GetBooksAsync()
-        {
-            var queryable = _dataContext.Books.AsQueryable();
+        //public async Task<List<Book>> GetBooksAsync()
+        //{
+        //    var queryable = _dataContext.Books.AsQueryable();
 
-            return await queryable.ToListAsync();
-        }
+        //    return await queryable.ToListAsync();
+        //}
 
-        public async Task<Book> GetBookByIdAsync(int bookid) 
+        public async Task<Book> GetBookByIdAsync(int bookid)
         {
             return await _dataContext.Books.SingleOrDefaultAsync(x => x.BookId == bookid);
-        }  
+        }
 
-        public async Task<List<Book>> GetBooksByPageAsync(int page, int recordsPerPage)
+        public async Task<List<Book>> GetBooksAsync(int page, int recordsPerPage, string filterString, string filterType)
         {
             // use queryable to prevent performance hit by not loading 
             // entire record set in momory
@@ -51,21 +52,29 @@ namespace TechLibrary.Services
             // starting bounds
             var start = end - recordsPerPage;
 
-            var takeTenRecords = queryable
+            // begin queryable variable chain
+            queryable = queryable
                 // ensure we're starting from the beginning
-                .OrderBy(p => p.BookId)
-                //only take the 10 starting from the given page
+                .OrderBy(p => p.BookId);
+
+            // if filter params are valid
+            queryable = queryable.FilterBooks(filterType, filterString);
+            
+            queryable = queryable
+                //only take the [recordsPerPage] count starting from the given page
                 .Skip(start)
                 .Take(recordsPerPage);
 
-            return await takeTenRecords.ToListAsync();
+            return await queryable.ToListAsync();
         }
 
-        public int GetTotalBooksCount()
+        public int GetBooksCount(string filterType, string filterString)
         {
+            // get total count of books with optional filter parameters
             var queryable = _dataContext.Books.AsQueryable();
+            queryable = queryable.FilterBooks(filterType, filterString);
             var bookCount = queryable.Count();
-
+            
             return bookCount;
         }
     }
