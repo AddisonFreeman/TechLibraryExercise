@@ -1,15 +1,24 @@
 <template>
     <div class="home">
         <h1>{{ msg }}</h1>
+        <div class="justify-content-left">
+            <b-form-fieldset label="Filter By:">
+                <b-form-select id="filter-by" v-model="filterType" :options="filterTypes"></b-form-select>
+            </b-form-fieldset>
+            <b-form-fieldset label="Search For: ">
+                <b-form-input type="text" class="form-control" placeholder="Search for ..." v-model="filterString"></b-form-input>
+            </b-form-fieldset>
+            <b-pagination :total-rows="totalItems" v-model="currentPage" :per-page="perPage" responsive="sm"></b-pagination>
+            <b-table ref="table" striped hover :no-local-sorting="true" :items="dataContext" :fields="fields" responsive="sm" :per-page="perPage" :current-page="currentPage" :filterString="filterString" :filterType="filterType">
+                <template v-slot:cell(thumbnailUrl)="data">
+                    <b-img :src="data.value" thumbnail fluid></b-img>
+                </template>
+                <template v-slot:cell(title_link)="data">
+                    <b-link :to="{ name: 'book_view', params: { 'id' : data.item.bookId } }">{{ data.item.title }}</b-link>
+                </template>
+            </b-table>
 
-        <b-table striped hover :items="dataContext" :fields="fields" responsive="sm">
-            <template v-slot:cell(thumbnailUrl)="data">
-                <b-img :src="data.value" thumbnail fluid></b-img>
-            </template>
-            <template v-slot:cell(title_link)="data">
-                <b-link :to="{ name: 'book_view', params: { 'id' : data.item.bookId } }">{{ data.item.title }}</b-link>
-            </template>
-        </b-table>
+        </div>
     </div>
 </template>
 
@@ -29,16 +38,55 @@
                 { key: 'descr', label: 'Description', sortable: true, sortDirection: 'desc' }
 
             ],
+            currentPage: 1,
+            // Setting per-page to 0 (default) will disable the local items pagination feature.
+            // https://bootstrap-vue.org/docs/components/table#pagination
+            perPage: 0,
+            // TODO update total items count inside itemsProvider
+            totalItems: 0,
+            filterString: "",
+            filterType: "Title",
+            filterTypes: ["Title", "Description"],
             items: []
         }),
         
         methods: {
+            // By default, the items provider function is responsible for all 
+            // paging, filtering, and sorting of the data, 
+            // before passing it to b-table for display.
             dataContext(ctx, callback) {
-                axios.get("https://localhost:5001/books")
+                if (ctx === undefined) {
+                    ctx = {};
+                    ctx.currentPage = this.currentPage;
+                    ctx.filterType = this.filterType;
+                    ctx.filterString = this.filterString;
+                }
+                // get fields using ctx.currentPage, was previously getting all records
+                axios.get(`https://localhost:5001/books?page=${ctx.currentPage}&filterType=${this.filterType}&filterString=${this.filterString}`)
                     .then(response => {
-                        
+                        console.log('dataContext called');
+                        var totalBooksCount = response.headers['x-total-books-count'];
+                        this.totalItems = totalBooksCount;
                         callback(response.data);
                     });
+            }
+        },
+        watch: {
+            filterType: {
+                handler: function (value) {
+                    console.log('filterType', value);
+                    // restart pagination 
+                    this.currentPage = 1;
+                    this.$refs.table.refresh();
+                }
+            },
+            filterString: {
+                handler: function (value) {
+                    console.log('filterString', value);
+                    // restart pagination 
+                    this.currentPage = 1;
+                    this.$refs.table.refresh();
+                }
             }
         }
     };
