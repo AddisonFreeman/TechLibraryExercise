@@ -18,11 +18,13 @@ namespace TechLibrary.Helpers
                 {
                     case "Title":
                         queryable = queryable
-                             .Where(p => p.Title.ToLower().Contains(filterString));
+                             // make case insensitive with ToLower()
+                             .Where(p => p.Title.ToLower().Contains(filterString.ToLower()));
                         break;
                     case "Description":
                         queryable = queryable
-                            .Where(p => p.ShortDescr.ToLower().Contains(filterString));
+                            // make case insensitive with ToLower()
+                            .Where(p => p.ShortDescr.ToLower().Contains(filterString.ToLower()));
                         break;
                 }
             }

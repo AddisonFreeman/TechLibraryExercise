@@ -19,6 +19,12 @@ Search:
 3) Bind filter params to watch method in View to call item provider method (https://stackoverflow.com/questions/53119086/how-do-i-update-the-items-async-in-a-b-table-from-bootstrap-vue-reusing-the-item)
 
 
+Edit Book:
+
+1) introduce edit state bound to texteditable params (https://stackoverflow.com/questions/42133894/vue-js-how-to-properly-watch-for-nested-data)(https://bootstrap-vue.org/docs/components/form-textarea) (https://stackoverflow.com/questions/48929139/hide-div-onclick-in-vue)
+
+2) watch params to POST to new endpoint as urlform to update record by bookId (https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-5.0&tabs=visual-studio)
+
 
 security:
 - npm i: 539 vulnerabilities (370 high!) run audit
@@ -29,16 +35,16 @@ network:
 - err 403 on 2 .jpg images from aws (type xml)
 
 performance:
-- make sure to use IQueryable methods to prevent loading entire dataset into memory (possibly deprecate /books/ endpoint that loads entire dataset) (https://dotnetcorecentral.com/blog/ienumerable-vs-iqueryable/)
-
-
-
-
-
-
+- make sure to use IQueryable methods to prevent loading entire dataset into memory (possibly deprecate /books/ endpoint that loads entire dataset) (https://dotnetcorecentral.com/blog/ienumerable-vs-iqueryable/
 
 
 
 TODO
 - filter text highlight (https://www.npmjs.com/package/vue-text-highlight)
+- persist filter state on back button 
+- add clear filter button
 - add sticky-header for readability
+- make unit tests
+- integrate github CI/CD
+- add comments to view layer
+- convert implicit vars to typed and change var bookid to bookId (https://docs.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions)

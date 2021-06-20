@@ -12,8 +12,8 @@ namespace TechLibrary.Services
 {
     public interface IBookService
     {
-        //Task<List<Book>> GetBooksAsync();
         Task<Book> GetBookByIdAsync(int bookid);
+        Task<Book> UpdateBookByIdAsync(int bookid, string description);
         Task<List<Book>> GetBooksAsync(int page, int recordsPerPage, string filterString, string filterType);
         int GetBooksCount(string filterType, string filterString);
     }
@@ -27,16 +27,25 @@ namespace TechLibrary.Services
             _dataContext = dataContext;
         }
 
-        //public async Task<List<Book>> GetBooksAsync()
-        //{
-        //    var queryable = _dataContext.Books.AsQueryable();
-
-        //    return await queryable.ToListAsync();
-        //}
-
         public async Task<Book> GetBookByIdAsync(int bookid)
         {
             return await _dataContext.Books.SingleOrDefaultAsync(x => x.BookId == bookid);
+        }
+
+        public async Task<Book> UpdateBookByIdAsync(int bookid, string description)
+        {
+            var bookRecord = await _dataContext.Books.SingleAsync(x => x.BookId == bookid);
+            bookRecord.ShortDescr = description;
+            try
+            {
+                await _dataContext.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw new Exception($"Could not update record {bookid} in Books database");
+            }
+
+            return bookRecord;
         }
 
         public async Task<List<Book>> GetBooksAsync(int page, int recordsPerPage, string filterString, string filterType)
