@@ -18,11 +18,11 @@ namespace TechLibrary.Helpers
                 {
                     case "Title":
                         queryable = queryable
-                             .Where(p => p.Title.Contains(filterString));
+                             .Where(p => p.Title.ToLower().Contains(filterString));
                         break;
                     case "Description":
                         queryable = queryable
-                            .Where(p => p.ShortDescr.Contains(filterString));
+                            .Where(p => p.ShortDescr.ToLower().Contains(filterString));
                         break;
                 }
             }

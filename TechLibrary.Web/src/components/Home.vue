@@ -8,7 +8,7 @@
             <b-form-fieldset label="Search For: ">
                 <b-form-input type="text" class="form-control" placeholder="Search for ..." v-model="filterString"></b-form-input>
             </b-form-fieldset>
-
+            <b-pagination :total-rows="totalItems" v-model="currentPage" :per-page="perPage" responsive="sm"></b-pagination>
             <b-table ref="table" striped hover :no-local-sorting="true" :items="dataContext" :fields="fields" responsive="sm" :per-page="perPage" :current-page="currentPage" :filterString="filterString" :filterType="filterType">
                 <template v-slot:cell(thumbnailUrl)="data">
                     <b-img :src="data.value" thumbnail fluid></b-img>
@@ -17,7 +17,7 @@
                     <b-link :to="{ name: 'book_view', params: { 'id' : data.item.bookId } }">{{ data.item.title }}</b-link>
                 </template>
             </b-table>
-            <b-pagination :total-rows="totalItems" v-model="currentPage" :per-page="perPage" responsive="sm"></b-pagination>
+
         </div>
     </div>
 </template>
