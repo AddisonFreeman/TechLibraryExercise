@@ -26,7 +26,7 @@ namespace TechLibrary.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] int page, [FromQuery] int recordsPerPage, [FromQuery] string filterString, [FromQuery] string filterType)
+        public async Task<IActionResult> GetAll([FromQuery] int page = 0, [FromQuery] int recordsPerPage = 10, [FromQuery] string filterType = "", [FromQuery] string filterString = "")
         {
             _logger.LogInformation("Get all books");
             _logger.LogInformation("queryString: " + Request.QueryString);
@@ -39,10 +39,9 @@ namespace TechLibrary.Controllers
             // send total books count in custom header
             HttpContext.Response.Headers.Add("x-total-books-count", totalBooksCount.ToString());
 
-
             // call async method in BookService to retrieve books with pagination param
             // if empty params give full response for backwards compatability
-            var books = await _bookService.GetBooksAsync(page, recordsPerPage, filterString, filterType);
+            var books = await _bookService.GetBooksAsync(page, recordsPerPage, filterType, filterString);
             var bookResponse = _mapper.Map<List<BookResponse>>(books);
 
             return Ok(bookResponse);
@@ -52,7 +51,6 @@ namespace TechLibrary.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             _logger.LogInformation($"Get book by id {id}");
-
             var book = await _bookService.GetBookByIdAsync(id);
 
             var bookResponse = _mapper.Map<BookResponse>(book);
@@ -64,12 +62,20 @@ namespace TechLibrary.Controllers
         public async Task<IActionResult> UpdateBookById(int id, [FromForm] string description)
         {
             _logger.LogInformation($"Update (PUT) book by id {id} with description {description}");
-            //var book = await _bookService.GetBookByIdAsync(id);
             var book = await _bookService.UpdateBookByIdAsync(id, description);
 
             var bookResponse = _mapper.Map<BookResponse>(book);
 
             return Ok(bookResponse);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateBook([FromForm] string title, [FromForm] int isbn, [FromForm] string description)
+        {
+            _logger.LogInformation($"Create (POST) book");
+            var bookId = await _bookService.CreateBook(title, isbn, description);
+            
+            return await GetById(bookId);
         }
     }
 }

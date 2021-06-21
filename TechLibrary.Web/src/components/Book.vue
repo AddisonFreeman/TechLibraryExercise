@@ -6,7 +6,8 @@
                 img-top
                 tag="article"
                 style="max-width: 30rem;"
-                class="mb-2">
+                class="mb-2"
+                >
             <b-card-text v-show="!edit.allow">
                 {{ book.descr }}
             </b-card-text>
@@ -33,7 +34,8 @@
             edit: {
                 allow: false,
                 message: "Edit"
-            }
+            },
+            cachedDescription: ""
         }),
         mounted() {
             axios.get(`https://localhost:5001/books/${this.id}`)
@@ -51,11 +53,10 @@
             },
             cancelEditState: function () {
                 this.edit.allow = !this.edit.allow;
-                // TODO refresh state on cancel
+                // put back original description
+                this.book.descr = this.cachedDescription;
             },
             updateDescription: function () {
-                console.log('update endpoint', this.book);
-               
                 axios.put(`https://localhost:5001/books/${this.id}`, `description=${this.book.descr}`)
                     .then(response => {
                         this.book = response.data;
@@ -66,6 +67,8 @@
         watch: {
             'edit.allow': function () {
                 if (this.edit.allow) {
+                    // cache description to put back if cancelled
+                    this.cachedDescription = this.book.descr;
                     this.edit.message = "Save";
                 } else {
                     this.edit.message = "Edit";

@@ -14,7 +14,8 @@ namespace TechLibrary.Services
     {
         Task<Book> GetBookByIdAsync(int bookid);
         Task<Book> UpdateBookByIdAsync(int bookid, string description);
-        Task<List<Book>> GetBooksAsync(int page, int recordsPerPage, string filterString, string filterType);
+        Task<int> CreateBook(string title, int isbn, string description);
+        Task<List<Book>> GetBooksAsync(int page = 0, int recordsPerPage = 10, string filterType = "", string filterString = "");
         int GetBooksCount(string filterType, string filterString);
     }
 
@@ -31,10 +32,29 @@ namespace TechLibrary.Services
         {
             return await _dataContext.Books.SingleOrDefaultAsync(x => x.BookId == bookid);
         }
-
-        public async Task<Book> UpdateBookByIdAsync(int bookid, string description)
+        public async Task<int> CreateBook(string title, int isbn, string description)
         {
-            var bookRecord = await _dataContext.Books.SingleAsync(x => x.BookId == bookid);
+            var book = new Book();
+            book.Title = title;
+            book.ISBN = isbn.ToString();
+            book.ShortDescr = description;
+
+            _dataContext.Add(book);
+            try
+            {
+                await _dataContext.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw new Exception($"Could not create record Books database");
+            }
+
+            return book.BookId;
+        }
+
+        public async Task<Book> UpdateBookByIdAsync(int id, string description)
+        {
+            var bookRecord = await _dataContext.Books.SingleAsync(x => x.BookId == id);
             bookRecord.ShortDescr = description;
             try
             {
@@ -42,19 +62,17 @@ namespace TechLibrary.Services
             }
             catch (DbUpdateConcurrencyException)
             {
-                throw new Exception($"Could not update record {bookid} in Books database");
+                throw new Exception($"Could not update record {id} in Books database");
             }
 
             return bookRecord;
         }
 
-        public async Task<List<Book>> GetBooksAsync(int page, int recordsPerPage, string filterString, string filterType)
+        public async Task<List<Book>> GetBooksAsync(int page = 0, int recordsPerPage = 10, string filterType = "", string filterString = "")
         {
             // use queryable to prevent performance hit by not loading 
             // entire record set in momory
             var queryable = _dataContext.Books.AsQueryable();
-            // default to 10 records per page if param 0 (not passed in)
-            recordsPerPage = recordsPerPage == 0 ? 10 : recordsPerPage;
 
             // ending bounds
             var end = page * recordsPerPage;
