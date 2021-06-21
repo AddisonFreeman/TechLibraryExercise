@@ -30,10 +30,11 @@ Security:
 - should CORS be set to allow all? requests should be locked to the test/production domains set in env
 
 Performance:
-- make sure to use IQueryable methods to prevent loading entire dataset into memory (possibly deprecate /books/ endpoint that loads entire dataset) [[11]](https://dotnetcorecentral.com/blog/ienumerable-vs-iqueryable/
+- make sure to use IQueryable methods to prevent loading entire dataset into memory (possibly deprecate /books/ endpoint that loads entire dataset) [[11]](https://dotnetcorecentral.com/blog/ienumerable-vs-iqueryable/)
 
 Challenges/Questions:
 - Testing methods with httpContext and other network mocked objects proved difficult. I would ask for assistance from a more senior dev to get unblocked on this task.
+- Github Actions failing because running NodeJS from project file.
 - The links in this document are resources I found helpful during development.
 
 
