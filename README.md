@@ -34,7 +34,7 @@ Performance:
 
 Challenges/Questions:
 - Testing methods with httpContext and other network mocked objects proved difficult. I would ask for assistance from a more senior dev to get unblocked on this task.
-- Github Actions failing because running NodeJS from project file.
+- Github Actions failing because running NodeJS from project file is not supported by .NET SDK. It is possible with .NET cli I believe.[[12]](https://stackoverflow.com/questions/61683751/how-to-install-node-js-tools-with-dotnet-cli)
 - The links in this document are resources I found helpful during development.
 
 
