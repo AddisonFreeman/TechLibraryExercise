@@ -7,14 +7,14 @@ Pagination:
 
 
 Search:
-1) Add query and filter URL parameter to /books endpoint [[4]](e.g. ?query=Zend&filter=title).
-2) Create helper extension method for filtering books [[5]](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods)
-3) Bind filter params to watch method in View to call item provider method [[6]](https://stackoverflow.com/questions/53119086/how-do-i-update-the-items-async-in-a-b-table-from-bootstrap-vue-reusing-the-item)
+1) Add query and filter URL parameter to /books endpoint (e.g. ?query=Zend&filter=title).
+2) Create helper extension method for filtering books [[4]](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods)
+3) Bind filter params to watch method in View to call item provider method [[5]](https://stackoverflow.com/questions/53119086/how-do-i-update-the-items-async-in-a-b-table-from-bootstrap-vue-reusing-the-item)
 
 
 Edit Book:
-1) introduce edit state bound to texteditable params with cached description for edge case where user edits then cancels [[7]](https://stackoverflow.com/questions/42133894/vue-js-how-to-properly-watch-for-nested-data) [[8]](https://bootstrap-vue.org/docs/components/form-textarea) [[9]](https://stackoverflow.com/questions/48929139/hide-div-onclick-in-vue)
-2) watch params to POST to new endpoint as urlformencoded to update record by bookId [[10]](https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-5.0&tabs=visual-studio)
+1) introduce edit state bound to texteditable params with cached description for edge case where user edits then cancels [[6]](https://stackoverflow.com/questions/42133894/vue-js-how-to-properly-watch-for-nested-data) [[7]](https://bootstrap-vue.org/docs/components/form-textarea) [[8]](https://stackoverflow.com/questions/48929139/hide-div-onclick-in-vue)
+2) watch params to POST to new endpoint as urlformencoded to update record by bookId [[9]](https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-5.0&tabs=visual-studio)
 
 
 Create Book:
@@ -23,17 +23,18 @@ Create Book:
 
 Other:
 Testing:
-- Use DefaultHttpContext in NuGet to moq web request methods [[11]](https://stackoverflow.com/questions/30909943/how-to-setup-request-header-in-fakehttpcontext-for-unit-testing)
+- Use DefaultHttpContext in NuGet to moq web request methods [[10]](https://stackoverflow.com/questions/30909943/how-to-setup-request-header-in-fakehttpcontext-for-unit-testing)
 
 Security:
 - npm i: 539 vulnerabilities (370 high!) run audit
 - should CORS be set to allow all? requests should be locked to the test/production domains set in env
 
 Performance:
-- make sure to use IQueryable methods to prevent loading entire dataset into memory (possibly deprecate /books/ endpoint that loads entire dataset) (https://dotnetcorecentral.com/blog/ienumerable-vs-iqueryable/
+- make sure to use IQueryable methods to prevent loading entire dataset into memory (possibly deprecate /books/ endpoint that loads entire dataset) [[11]](https://dotnetcorecentral.com/blog/ienumerable-vs-iqueryable/)
 
 Challenges/Questions:
 - Testing methods with httpContext and other network mocked objects proved difficult. I would ask for assistance from a more senior dev to get unblocked on this task.
+- Github Actions failing because running NodeJS from project file is not supported by .NET SDK. It is possible with .NET cli I believe.[[12]](https://stackoverflow.com/questions/61683751/how-to-install-node-js-tools-with-dotnet-cli)
 - The links in this document are resources I found helpful during development.
 
 

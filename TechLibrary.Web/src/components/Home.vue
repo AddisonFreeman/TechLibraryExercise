@@ -114,14 +114,14 @@
         },
         watch: {
             filterType: {
-                handler: function (value) {
+                handler: function () {
                     // restart pagination 
                     this.currentPage = 1;
                     this.$refs.table.refresh();
                 }
             },
             filterString: {
-                handler: function (value) {
+                handler: function () {
                     // restart pagination 
                     this.currentPage = 1;
                     this.$refs.table.refresh();
