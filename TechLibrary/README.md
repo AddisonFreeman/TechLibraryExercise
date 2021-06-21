@@ -13,7 +13,7 @@ Search:
 
 
 Edit Book:
-1) introduce edit state bound to texteditable params [[7]](https://stackoverflow.com/questions/42133894/vue-js-how-to-properly-watch-for-nested-data) [[8]](https://bootstrap-vue.org/docs/components/form-textarea) [[9]](https://stackoverflow.com/questions/48929139/hide-div-onclick-in-vue)
+1) introduce edit state bound to texteditable params with cached description for edge case where user edits then cancels [[7]](https://stackoverflow.com/questions/42133894/vue-js-how-to-properly-watch-for-nested-data) [[8]](https://bootstrap-vue.org/docs/components/form-textarea) [[9]](https://stackoverflow.com/questions/48929139/hide-div-onclick-in-vue)
 2) watch params to POST to new endpoint as urlformencoded to update record by bookId [[10]](https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-5.0&tabs=visual-studio)
 
 
